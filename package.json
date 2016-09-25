@@ -1,0 +1,19 @@
+{
+  "name": "pdf-server",
+  "version": "1.0.0",
+  "description": "execute pdfbox stuff on node server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "tazzledazzle",
+  "license": "MIT",
+  "dependencies": {
+    "canvas": "^1.5.0",
+    "child_process": "^1.0.2",
+    "d3": "^4.2.6",
+    "express": "^4.14.0",
+    "grunt": "^1.0.1",
+    "livereload": "^0.5.0"
+  }
+}
