@@ -1,7 +1,9 @@
 var http = require('http'),
     path = require('path'),
     fs = require('fs'),
+    livereload = require('livereload'),
     fileUpload = require('express-fileupload'),
+    StringDecoder = require('string_decoder').StringDecoder,
     //MongoClient = require('mongodb').MongoClient,
     //Server = require('mongodb').Server,
     //CollectionDriver = require('./collectionDriver').CollectionDriver,
@@ -14,11 +16,18 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('src', path.join(__dirname, 'src'));
 app.set('view engine', 'jade');
 //app.use(express.bodyParser());
-var cmd = "java -jar src/pdfbox-app-2.0.3.jar ExtractText -console ";
+var cmd = "java -jar src/pdfbox-app-2.0.3.jar ExtractText ";
 
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(fileUpload());
+
+app.use(require('connect-livereload')
+    ({
+        port: 35729
+}));
+
+
 app.post('/upload', function(req, res){
     var sampleFile;
 
@@ -40,7 +49,12 @@ app.post('/upload', function(req, res){
            console.log(stdo);
            console.log(stde);
            console.log("Done!!!!!!");
-           res.send('<p>'+stdo+'</p>');
+           //res.send('<p>'+stdo+'</p><br><a href="/">Back</a>');
+           console.log(sampleFile.name);
+           var decoder = new StringDecoder('utf8');
+           var data_string = decoder.write(sampleFile.data);
+           console.log(data_string);
+           res.render('uploaded', {"pdf": sampleFile});
        });
     });
     console.log("done");
@@ -56,6 +70,9 @@ app.get('/', function (req, res){
 
 
 
+var reloadServer = livereload.createServer();
+reloadServer.config.exts.push(["jade", "js"]);
+reloadServer.watch(__dirname);
 
 http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));
